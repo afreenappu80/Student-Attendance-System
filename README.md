@@ -2,6 +2,15 @@
 
 EduTrack is a full-stack web application designed to help administrators and students seamlessly manage and track attendance, marks, and profiles.
 
+## 📸 Screenshots
+<p align="center">
+  <img src="docs/images/landing.png" width="45%" alt="Landing Page">
+  <img src="docs/images/student_dashboard.png" width="45%" alt="Student Dashboard">
+  <br>
+  <img src="docs/images/admin_dashboard.png" width="45%" alt="Admin Dashboard">
+  <img src="docs/images/analytics.png" width="45%" alt="Advanced Analytics">
+</p>
+
 ## 🚀 Features
 
 **Admin Portal:**
