@@ -17,6 +17,7 @@ const DashboardLayout = ({ children, title }) => {
     ? [
         { name: 'Dashboard', path: '/admin', icon: FiHome },
         { name: 'Students', path: '/admin/students', icon: FiUser },
+        { name: 'Departments', path: '/admin/departments', icon: FiUser }, // Or use a different icon like FiList if imported
         { name: 'Subjects', path: '/admin/subjects', icon: FiBook },
         { name: 'Attendance', path: '/admin/attendance', icon: FiCheckSquare },
         { name: 'Assignments', path: '/admin/assignments', icon: FiFileText },
@@ -41,18 +42,18 @@ const DashboardLayout = ({ children, title }) => {
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="flex items-center justify-center h-16 border-b border-gray-200 dark:border-gray-700">
+      <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto flex flex-col ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex items-center justify-center h-16 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
           <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">EduTrack</span>
         </div>
-        <nav className="p-4 space-y-1">
+        <nav className="p-4 space-y-1 flex-1 overflow-y-auto">
           {navItems.map((item) => (
             <Link
               key={item.name}
               to={item.path}
               className="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-colors"
             >
-              <item.icon className="mr-3" size={20} />
+              <item.icon className="mr-3 flex-shrink-0" size={20} />
               {item.name}
             </Link>
           ))}
@@ -60,7 +61,7 @@ const DashboardLayout = ({ children, title }) => {
             onClick={handleLogout}
             className="w-full flex items-center px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors mt-8"
           >
-            <FiLogOut className="mr-3" size={20} />
+            <FiLogOut className="mr-3 flex-shrink-0" size={20} />
             Logout
           </button>
         </nav>

@@ -27,25 +27,19 @@ EduTrack is a full-stack web application designed to help administrators and stu
 ## 💻 Tech Stack
 - **Frontend:** React.js, Tailwind CSS, Vite
 - **Backend:** Node.js, Express.js
-- **Database:** MySQL
+- **Database:** SQLite (Zero-configuration)
 - **File Uploads:** Multer
 
 ---
 
 ## 🛠️ Local Setup Instructions
 
-Follow these steps to run the project locally on your machine.
+Follow these steps to run the project locally on your machine. The database is pre-configured to use SQLite, so no external database installation is required!
 
 ### 1. Prerequisites
 - **Node.js** installed (v16+)
-- **MySQL Server** installed and running
 
-### 2. Database Setup
-1. Open your MySQL client (like MySQL Workbench or XAMPP phpMyAdmin).
-2. Create a new database for the project (e.g., `student_attendance_db`).
-3. Import your database schema tables into this new database.
-
-### 3. Backend (Server) Setup
+### 2. Backend (Server) Setup
 1. Open a terminal and navigate to the backend folder:
    ```bash
    cd server
@@ -54,19 +48,7 @@ Follow these steps to run the project locally on your machine.
    ```bash
    npm install
    ```
-3. Configure your Environment Variables:
-   Create a `.env` file inside the `server/` folder and add your database credentials:
-   ```env
-   PORT=5000
-   DB_HOST=localhost
-   DB_USER=root
-   DB_PASSWORD=your_mysql_password
-   DB_NAME=student_attendance_db
-   SESSION_SECRET=super_secret_key_change_this
-   CLIENT_URL=http://localhost:5175
-   NODE_ENV=development
-   ```
-4. Start the backend development server:
+3. Start the backend development server (this will automatically initialize the `database.sqlite` file and seed dummy data):
    ```bash
    npm run dev
    ```
