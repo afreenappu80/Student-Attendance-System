@@ -10,7 +10,7 @@ const StudentNotifications = () => {
 
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/notifications', { withCredentials: true });
+      const res = await axios.get('/api/notifications', { withCredentials: true });
       setNotifications(res.data);
     } catch (err) {
       console.error(err);

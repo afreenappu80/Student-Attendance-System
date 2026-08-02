@@ -18,7 +18,7 @@ const AdminMarks = () => {
 
   const fetchSubjects = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/subjects', { withCredentials: true });
+      const { data } = await axios.get('/api/subjects', { withCredentials: true });
       setSubjects(data);
     } catch (error) {
       toast.error('Failed to fetch subjects');
@@ -32,8 +32,8 @@ const AdminMarks = () => {
     }
     setLoading(true);
     try {
-      const stdRes = await axios.get('http://localhost:5000/api/students?limit=1000', { withCredentials: true });
-      const marksRes = await axios.get(`http://localhost:5000/api/marks?semester=${semester}`, { withCredentials: true });
+      const stdRes = await axios.get('/api/students?limit=1000', { withCredentials: true });
+      const marksRes = await axios.get(`/api/marks?semester=${semester}`, { withCredentials: true });
       
       setStudents(stdRes.data.students.filter(s => s.status === 'Active'));
       
@@ -71,7 +71,7 @@ const AdminMarks = () => {
         const d = marksData[studentId];
         if (!d.internal_marks && !d.external_marks && !d.assignment_marks && !d.lab_marks && !d.project_marks) return Promise.resolve();
         
-        return axios.post('http://localhost:5000/api/marks', {
+        return axios.post('/api/marks', {
           student_id: studentId,
           subject_id: selectedSubject,
           semester: semester,

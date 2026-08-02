@@ -12,7 +12,7 @@ const StudentAssignments = () => {
 
   const fetchAssignments = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/assignments', { withCredentials: true });
+      const res = await axios.get('/api/assignments', { withCredentials: true });
       setAssignments(res.data);
     } catch (err) {
       console.error(err);
@@ -40,7 +40,7 @@ const StudentAssignments = () => {
     formData.append('file', selectedFile);
 
     try {
-      await axios.post(`http://localhost:5000/api/assignments/${assignmentId}/submit`, formData, {
+      await axios.post(`/api/assignments/${assignmentId}/submit`, formData, {
         withCredentials: true,
         headers: { 'Content-Type': 'multipart/form-data' }
       });

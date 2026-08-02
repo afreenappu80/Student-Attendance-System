@@ -14,8 +14,8 @@ const StudentDashboard = () => {
     const fetchDashboard = async () => {
       try {
         const [profileRes, dashboardRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/profile', { withCredentials: true }),
-          axios.get('http://localhost:5000/api/dashboard/student', { withCredentials: true })
+          axios.get('/api/profile', { withCredentials: true }),
+          axios.get('/api/dashboard/student', { withCredentials: true })
         ]);
         setProfileData(profileRes.data);
         setDashboardData(dashboardRes.data);

@@ -15,7 +15,7 @@ const StudentRegister = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/auth/register', data);
+      await axios.post('/api/auth/register', data);
       toast.success('Registration Successful!');
       setTimeout(() => {
         navigate('/student-login');

@@ -18,7 +18,7 @@ const AdminLogin = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/admin/login', data);
+      const response = await axios.post('/api/auth/admin/login', data);
       login(response.data);
       toast.success('Admin Login successful!');
       navigate('/admin');

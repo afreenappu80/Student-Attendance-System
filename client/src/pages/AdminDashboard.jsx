@@ -29,7 +29,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/dashboard/admin', { withCredentials: true });
+        const { data } = await axios.get('/api/dashboard/admin', { withCredentials: true });
         setStats({
           totalStudents: data.totalStudents,
           totalSubjects: data.totalSubjects,

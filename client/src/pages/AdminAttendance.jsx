@@ -18,7 +18,7 @@ const AdminAttendance = () => {
 
   const fetchSubjects = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/subjects', { withCredentials: true });
+      const { data } = await axios.get('/api/subjects', { withCredentials: true });
       setSubjects(data);
     } catch (error) {
       toast.error('Failed to fetch subjects');
@@ -33,8 +33,8 @@ const AdminAttendance = () => {
     setLoading(true);
     try {
       // For simplicity in Phase 2, we fetch all active students and map existing attendance
-      const stdRes = await axios.get('http://localhost:5000/api/students?limit=1000', { withCredentials: true });
-      const attRes = await axios.get(`http://localhost:5000/api/attendance?subject_id=${selectedSubject}&start_date=${attendanceDate}&end_date=${attendanceDate}`, { withCredentials: true });
+      const stdRes = await axios.get('/api/students?limit=1000', { withCredentials: true });
+      const attRes = await axios.get(`/api/attendance?subject_id=${selectedSubject}&start_date=${attendanceDate}&end_date=${attendanceDate}`, { withCredentials: true });
       
       setStudents(stdRes.data.students.filter(s => s.status === 'Active'));
       
@@ -62,7 +62,7 @@ const AdminAttendance = () => {
     try {
       const promises = Object.keys(attendanceData).map(studentId => {
         if (!attendanceData[studentId].status) return Promise.resolve();
-        return axios.post('http://localhost:5000/api/attendance', {
+        return axios.post('/api/attendance', {
           student_id: studentId,
           subject_id: selectedSubject,
           attendance_date: attendanceDate,

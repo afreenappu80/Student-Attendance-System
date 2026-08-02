@@ -14,7 +14,7 @@ const StudentAttendance = () => {
   const fetchAttendance = async () => {
     try {
       // Backend automatically filters for the logged-in student
-      const { data } = await axios.get('http://localhost:5000/api/attendance', { withCredentials: true });
+      const { data } = await axios.get('/api/attendance', { withCredentials: true });
       setAttendance(data);
     } catch (error) {
       toast.error('Failed to fetch attendance');

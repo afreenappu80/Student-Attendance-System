@@ -18,7 +18,7 @@ const StudentLogin = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', data);
+      const response = await axios.post('/api/auth/login', data);
       login(response.data);
       toast.success('Login successful!');
       navigate('/student');

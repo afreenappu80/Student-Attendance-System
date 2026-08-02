@@ -13,7 +13,7 @@ const StudentMarks = () => {
 
   const fetchMarks = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/marks', { withCredentials: true });
+      const { data } = await axios.get('/api/marks', { withCredentials: true });
       setMarks(data);
     } catch (error) {
       toast.error('Failed to fetch marks');

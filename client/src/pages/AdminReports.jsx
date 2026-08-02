@@ -15,11 +15,11 @@ const AdminReports = () => {
     setLoading(true);
     try {
       if (reportType === 'attendance') {
-        const { data } = await axios.get('http://localhost:5000/api/attendance', { withCredentials: true });
+        const { data } = await axios.get('/api/attendance', { withCredentials: true });
         if (format === 'pdf') generateAttendancePDF(data);
         if (format === 'excel') generateAttendanceExcel(data);
       } else if (reportType === 'marks') {
-        const { data } = await axios.get('http://localhost:5000/api/marks', { withCredentials: true });
+        const { data } = await axios.get('/api/marks', { withCredentials: true });
         if (format === 'pdf') generateMarksPDF(data);
         if (format === 'excel') generateMarksExcel(data);
       }

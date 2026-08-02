@@ -15,7 +15,7 @@ const AdminAssignments = () => {
 
   const fetchAssignments = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/assignments', { withCredentials: true });
+      const res = await axios.get('/api/assignments', { withCredentials: true });
       setAssignments(res.data);
     } catch (err) {
       console.error(err);
@@ -26,7 +26,7 @@ const AdminAssignments = () => {
 
   const fetchSubjects = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/subjects', { withCredentials: true });
+      const res = await axios.get('/api/subjects', { withCredentials: true });
       setSubjects(res.data);
     } catch (err) {
       console.error(err);
@@ -41,7 +41,7 @@ const AdminAssignments = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/assignments', newAssignment, { withCredentials: true });
+      await axios.post('/api/assignments', newAssignment, { withCredentials: true });
       toast.success('Assignment created successfully');
       setNewAssignment({ title: '', description: '', due_date: '', priority: 'Medium', subject_id: '' });
       fetchAssignments();
@@ -53,7 +53,7 @@ const AdminAssignments = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this assignment?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/assignments/${id}`, { withCredentials: true });
+      await axios.delete(`/api/assignments/${id}`, { withCredentials: true });
       toast.success('Assignment deleted');
       fetchAssignments();
     } catch (err) {

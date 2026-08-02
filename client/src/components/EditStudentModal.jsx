@@ -36,7 +36,7 @@ const EditStudentModal = ({ isOpen, onClose, onSuccess, student }) => {
   const fetchActiveSubjects = async () => {
     setFetchingSubjects(true);
     try {
-      const { data } = await axios.get('http://localhost:5000/api/subjects?status=Active', { withCredentials: true });
+      const { data } = await axios.get('/api/subjects?status=Active', { withCredentials: true });
       setSubjects(data);
     } catch (error) {
       toast.error('Failed to fetch active subjects');
@@ -63,7 +63,7 @@ const EditStudentModal = ({ isOpen, onClose, onSuccess, student }) => {
           submitData.append(key, formData[key]);
         }
       });
-      await axios.put(`http://localhost:5000/api/students/${student.id}`, submitData, { 
+      await axios.put(`/api/students/${student.id}`, submitData, { 
         withCredentials: true,
         headers: { 'Content-Type': 'multipart/form-data' }
       });

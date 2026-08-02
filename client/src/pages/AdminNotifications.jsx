@@ -10,7 +10,7 @@ const AdminNotifications = () => {
 
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/notifications', { withCredentials: true });
+      const res = await axios.get('/api/notifications', { withCredentials: true });
       setNotifications(res.data);
     } catch (err) {
       console.error(err);
@@ -25,7 +25,7 @@ const AdminNotifications = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/notifications/${id}`, { withCredentials: true });
+      await axios.delete(`/api/notifications/${id}`, { withCredentials: true });
       fetchNotifications();
       toast.success('Notification removed');
     } catch (err) {

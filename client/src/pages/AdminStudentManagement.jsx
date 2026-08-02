@@ -19,7 +19,7 @@ const AdminStudentManagement = () => {
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`http://localhost:5000/api/students?page=${page}&limit=10&search=${search}`, { withCredentials: true });
+      const { data } = await axios.get(`/api/students?page=${page}&limit=10&search=${search}`, { withCredentials: true });
       setStudents(data.students);
       setTotalPages(data.pages);
     } catch (error) {
@@ -40,7 +40,7 @@ const AdminStudentManagement = () => {
   const toggleStatus = async (id, currentStatus) => {
     const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
     try {
-      await axios.patch(`http://localhost:5000/api/students/${id}/status`, { status: newStatus }, { withCredentials: true });
+      await axios.patch(`/api/students/${id}/status`, { status: newStatus }, { withCredentials: true });
       toast.success(`Student marked as ${newStatus}`);
       setStudents(students.map(s => s.id === id ? { ...s, status: newStatus } : s));
     } catch (error) {
@@ -51,7 +51,7 @@ const AdminStudentManagement = () => {
   const deleteStudent = async (id) => {
     if (window.confirm('Are you sure you want to soft-delete this student?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/students/${id}`, { withCredentials: true });
+        await axios.delete(`/api/students/${id}`, { withCredentials: true });
         toast.success('Student deleted');
         setStudents(students.map(s => s.id === id ? { ...s, status: 'Inactive' } : s)); // Reflect soft delete
       } catch (error) {
@@ -107,7 +107,7 @@ const AdminStudentManagement = () => {
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         {student.profile_image ? (
-                          <img src={`http://localhost:5000${student.profile_image}`} alt={student.full_name} className="h-10 w-10 rounded-full object-cover mr-3 border border-gray-200 dark:border-gray-700" />
+                          <img src={`${student.profile_image}`} alt={student.full_name} className="h-10 w-10 rounded-full object-cover mr-3 border border-gray-200 dark:border-gray-700" />
                         ) : (
                           <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 font-bold mr-3">
                             {student.full_name.charAt(0)}

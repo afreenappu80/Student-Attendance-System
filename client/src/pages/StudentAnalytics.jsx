@@ -29,7 +29,7 @@ const StudentAnalytics = () => {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/analytics/student', { withCredentials: true });
+        const { data } = await axios.get('/api/analytics/student', { withCredentials: true });
         setChartData(data);
       } catch (error) {
         console.error('Failed to fetch student analytics', error);

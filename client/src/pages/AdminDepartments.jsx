@@ -15,7 +15,7 @@ const AdminDepartments = () => {
 
   const fetchDepartments = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/departments', { withCredentials: true });
+      const { data } = await axios.get('/api/departments', { withCredentials: true });
       setDepartments(data);
     } catch (error) {
       toast.error('Failed to fetch departments');
@@ -27,7 +27,7 @@ const AdminDepartments = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/departments', newDept, { withCredentials: true });
+      await axios.post('/api/departments', newDept, { withCredentials: true });
       toast.success('Department added');
       setNewDept({ department_name: '', hod_name: '' });
       fetchDepartments();
@@ -39,7 +39,7 @@ const AdminDepartments = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Delete this department?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/departments/${id}`, { withCredentials: true });
+        await axios.delete(`/api/departments/${id}`, { withCredentials: true });
         toast.success('Department deleted');
         fetchDepartments();
       } catch (error) {

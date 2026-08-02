@@ -30,7 +30,7 @@ const AdminAnalytics = () => {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/analytics/admin', { withCredentials: true });
+        const { data } = await axios.get('/api/analytics/admin', { withCredentials: true });
         setChartData(data);
       } catch (error) {
         console.error('Failed to fetch admin analytics', error);

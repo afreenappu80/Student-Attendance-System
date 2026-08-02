@@ -24,7 +24,7 @@ const AdminProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/profile', { withCredentials: true });
+        const { data } = await axios.get('/api/profile', { withCredentials: true });
         setProfileData({
           name: data.full_name || user?.name || 'Administrator',
           email: data.email || user?.username || 'admin@edutrack.com',
@@ -44,7 +44,7 @@ const AdminProfile = () => {
 
   const handleSave = async () => {
     try {
-      await axios.put('http://localhost:5000/api/profile', {
+      await axios.put('/api/profile', {
         full_name: profileData.name,
         phone: profileData.phone,
         location: profileData.location,
@@ -66,7 +66,7 @@ const AdminProfile = () => {
     
     setUploadingImage(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/api/profile/upload', formData, {
+      const { data } = await axios.post('/api/profile/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true
       });
@@ -101,7 +101,7 @@ const AdminProfile = () => {
               <div className="flex flex-col sm:flex-row items-center sm:items-end space-y-4 sm:space-y-0 sm:space-x-6">
                 <div className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 bg-white dark:bg-gray-700 shadow-xl flex items-center justify-center relative overflow-hidden group">
                   {profileData.profile_image ? (
-                    <img src={`http://localhost:5000${profileData.profile_image}`} alt="Profile" className="w-full h-full object-cover" />
+                    <img src={`${profileData.profile_image}`} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-4xl text-gray-400">{profileData.name.charAt(0)}</span>
                   )}

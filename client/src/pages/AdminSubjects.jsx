@@ -19,8 +19,8 @@ const AdminSubjects = () => {
   const fetchData = async () => {
     try {
       const [subRes, deptRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/subjects', { withCredentials: true }),
-        axios.get('http://localhost:5000/api/departments', { withCredentials: true })
+        axios.get('/api/subjects', { withCredentials: true }),
+        axios.get('/api/departments', { withCredentials: true })
       ]);
       setSubjects(subRes.data);
       setDepartments(deptRes.data);
@@ -34,7 +34,7 @@ const AdminSubjects = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/subjects', newSub, { withCredentials: true });
+      await axios.post('/api/subjects', newSub, { withCredentials: true });
       toast.success('Subject added');
       setNewSub({ subject_code: '', subject_name: '', department: '', semester: '', credits: '', faculty_name: '', status: 'Active' });
       fetchData();
@@ -46,7 +46,7 @@ const AdminSubjects = () => {
   const handleEdit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/subjects/${editSub.id}`, editSub, { withCredentials: true });
+      await axios.put(`/api/subjects/${editSub.id}`, editSub, { withCredentials: true });
       toast.success('Subject updated');
       setEditSub(null);
       fetchData();
@@ -58,7 +58,7 @@ const AdminSubjects = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Delete this subject?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/subjects/${id}`, { withCredentials: true });
+        await axios.delete(`/api/subjects/${id}`, { withCredentials: true });
         toast.success('Subject deleted');
         fetchData();
       } catch (error) {
@@ -70,7 +70,7 @@ const AdminSubjects = () => {
   const toggleStatus = async (subject) => {
     const newStatus = subject.status === 'Active' ? 'Inactive' : 'Active';
     try {
-      await axios.put(`http://localhost:5000/api/subjects/${subject.id}`, { ...subject, status: newStatus }, { withCredentials: true });
+      await axios.put(`/api/subjects/${subject.id}`, { ...subject, status: newStatus }, { withCredentials: true });
       toast.success(`Subject marked as ${newStatus}`);
       fetchData();
     } catch (error) {
