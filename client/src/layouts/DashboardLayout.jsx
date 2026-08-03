@@ -1,11 +1,13 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FiHome, FiUser, FiLogOut, FiMenu, FiX, FiCheckSquare, FiBarChart2, FiBook, FiFileText, FiBell, FiSettings } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const DashboardLayout = ({ children, title }) => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
@@ -40,21 +42,26 @@ const DashboardLayout = ({ children, title }) => {
       ];
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
-      {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto flex flex-col ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="flex items-center justify-center h-16 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">EduTrack</span>
+    <div className="flex h-screen overflow-hidden bg-transparent">
+      {/* Sidebar - Floating Glass */}
+      <div className={`fixed inset-y-0 left-0 z-30 w-64 glass shadow-xl m-4 rounded-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto flex flex-col ${sidebarOpen ? 'translate-x-0' : '-translate-x-[120%]'}`}>
+        <div className="flex items-center justify-center h-20 border-b border-gray-200/30 dark:border-gray-700/30 flex-shrink-0">
+          <span className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-500 tracking-tight">EduTrack 2.0</span>
         </div>
         <nav className="p-4 space-y-1 flex-1 overflow-y-auto">
           {navItems.map((item) => (
             <Link
               key={item.name}
               to={item.path}
-              className="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-colors"
+              onClick={() => setSidebarOpen(false)}
+              className={`flex items-center px-4 py-3 rounded-xl transition-all duration-200 ${
+                location.pathname === item.path 
+                  ? 'bg-indigo-500 text-white shadow-md glow-primary' 
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-white/40 dark:hover:bg-gray-800/40 hover:text-indigo-600 dark:hover:text-indigo-400'
+              }`}
             >
-              <item.icon className="mr-3 flex-shrink-0" size={20} />
-              {item.name}
+              <item.icon className={`mr-3 flex-shrink-0 ${location.pathname === item.path ? 'text-white' : ''}`} size={20} />
+              <span className="font-medium">{item.name}</span>
             </Link>
           ))}
           <button
@@ -69,8 +76,8 @@ const DashboardLayout = ({ children, title }) => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top Header */}
-        <header className="bg-white dark:bg-gray-800 shadow-sm z-20">
+        {/* Top Header - Glass */}
+        <header className="glass shadow-sm z-20 m-4 mb-0 rounded-2xl">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
             <div className="flex items-center">
               <button
@@ -79,7 +86,7 @@ const DashboardLayout = ({ children, title }) => {
               >
                 {sidebarOpen ? <FiX size={24} /> : <FiMenu size={24} />}
               </button>
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h1>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{title}</h1>
             </div>
             <div className="flex items-center">
               <div className="flex items-center space-x-3">
@@ -96,7 +103,18 @@ const DashboardLayout = ({ children, title }) => {
 
         {/* Main scrollable area */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-          {children}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="h-full"
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
     </div>

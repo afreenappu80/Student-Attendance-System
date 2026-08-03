@@ -4,6 +4,7 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import { FiBook, FiCheckCircle, FiBell, FiAward, FiClock, FiFileText } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { motion } from 'framer-motion';
 
 const StudentDashboard = () => {
   const { user } = useContext(AuthContext);
@@ -42,8 +43,13 @@ const StudentDashboard = () => {
   return (
     <DashboardLayout title="Student Portal">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-8 mb-8 text-white shadow-lg relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/3"></div>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-3xl p-8 mb-8 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
         <div className="absolute bottom-0 right-1/4 w-32 h-32 bg-white opacity-5 rounded-full translate-y-1/2"></div>
         
         <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6">
@@ -76,7 +82,7 @@ const StudentDashboard = () => {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
@@ -84,17 +90,22 @@ const StudentDashboard = () => {
         <div className="lg:col-span-2 space-y-8">
           
           {/* Upcoming Assignments */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="glass rounded-3xl border border-white/20 overflow-hidden hover:shadow-xl transition-shadow duration-300"
+          >
+            <div className="p-6 border-b border-gray-100/20 flex justify-between items-center">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
                 <FiFileText className="mr-2 text-blue-500" /> Upcoming Assignments
               </h3>
               <Link to="/student/assignments" className="text-sm text-blue-600 hover:underline">View All</Link>
             </div>
-            <div className="divide-y divide-gray-100 dark:divide-gray-700">
-              {upcomingAssignments.length === 0 && <p className="p-6 text-gray-500 text-center">No upcoming assignments.</p>}
+            <div className="divide-y divide-gray-100/10">
+              {upcomingAssignments.length === 0 && <p className="p-6 text-gray-500 text-center font-medium">No upcoming assignments.</p>}
               {upcomingAssignments.map(task => (
-                <div key={task.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors flex items-center justify-between group">
+                <div key={task.id} className="p-6 hover:bg-white/40 dark:hover:bg-gray-800/40 transition-colors flex items-center justify-between group">
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center">
                       <FiClock size={20} />
@@ -111,11 +122,16 @@ const StudentDashboard = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Recent Marks */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="glass rounded-3xl border border-white/20 overflow-hidden hover:shadow-xl transition-shadow duration-300"
+          >
+            <div className="p-6 border-b border-gray-100/20 flex justify-between items-center">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
                 <FiAward className="mr-2 text-purple-500" /> Recent Marks
               </h3>
@@ -124,9 +140,9 @@ const StudentDashboard = () => {
             <div className="p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {recentMarks.map(mark => (
-                  <div key={mark.id} className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl flex items-center justify-between">
+                  <div key={mark.id} className="p-5 border border-white/20 bg-white/20 dark:bg-gray-800/30 rounded-2xl flex items-center justify-between hover:scale-[1.02] transition-transform duration-300">
                     <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">{mark.subject_name}</h4>
+                      <h4 className="font-bold text-gray-900 dark:text-white">{mark.subject_name}</h4>
                       <p className="text-sm text-gray-500 mt-1">Exam</p>
                     </div>
                     <div className="text-right">
@@ -135,10 +151,10 @@ const StudentDashboard = () => {
                     </div>
                   </div>
                 ))}
-                {recentMarks.length === 0 && <p className="text-gray-500 text-center w-full col-span-2">No recent marks found.</p>}
+                {recentMarks.length === 0 && <p className="text-gray-500 text-center w-full col-span-2 font-medium">No recent marks found.</p>}
               </div>
             </div>
-          </div>
+          </motion.div>
 
         </div>
 
@@ -146,8 +162,13 @@ const StudentDashboard = () => {
         <div className="space-y-8">
           
           {/* Latest Notifications */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-            <div className="p-6 border-b border-gray-100 dark:border-gray-700">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="glass rounded-3xl border border-white/20 hover:shadow-xl transition-shadow duration-300"
+          >
+            <div className="p-6 border-b border-gray-100/20">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
                 <FiBell className="mr-2 text-yellow-500" /> Notifications
               </h3>
@@ -175,22 +196,27 @@ const StudentDashboard = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Quick Links */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Quick Links</h3>
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="glass rounded-3xl border border-white/20 p-6 hover:shadow-xl transition-shadow duration-300"
+          >
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 tracking-tight">Quick Links</h3>
             <div className="grid grid-cols-2 gap-4">
-              <Link to="/student/attendance" className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-center hover:bg-blue-50 dark:hover:bg-gray-700 transition group">
-                <FiCheckCircle className="mx-auto text-gray-400 group-hover:text-blue-500 mb-2" size={24} />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Attendance</span>
+              <Link to="/student/attendance" className="p-5 bg-white/30 dark:bg-gray-800/40 rounded-2xl text-center hover:bg-white/50 dark:hover:bg-gray-700/60 hover:-translate-y-1 transition-all duration-300 group shadow-sm">
+                <FiCheckCircle className="mx-auto text-indigo-400 group-hover:text-indigo-600 group-hover:scale-110 transition-transform mb-3" size={28} />
+                <span className="text-sm font-bold text-gray-700 dark:text-gray-200">Attendance</span>
               </Link>
-              <Link to="/student/profile" className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-center hover:bg-blue-50 dark:hover:bg-gray-700 transition group">
-                <FiBook className="mx-auto text-gray-400 group-hover:text-blue-500 mb-2" size={24} />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">My Profile</span>
+              <Link to="/student/profile" className="p-5 bg-white/30 dark:bg-gray-800/40 rounded-2xl text-center hover:bg-white/50 dark:hover:bg-gray-700/60 hover:-translate-y-1 transition-all duration-300 group shadow-sm">
+                <FiBook className="mx-auto text-purple-400 group-hover:text-purple-600 group-hover:scale-110 transition-transform mb-3" size={28} />
+                <span className="text-sm font-bold text-gray-700 dark:text-gray-200">My Profile</span>
               </Link>
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </div>

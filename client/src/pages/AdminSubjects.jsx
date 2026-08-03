@@ -101,8 +101,8 @@ const AdminSubjects = () => {
                 <div><label className={labelClass}>Name</label><input type="text" value={editSub.subject_name} onChange={e => setEditSub({...editSub, subject_name: e.target.value})} required className={inputClass} /></div>
                 <div>
                   <label className={labelClass}>Department</label>
-                  <select value={editSub.department} onChange={e => setEditSub({...editSub, department: e.target.value})} required className={inputClass}>
-                    <option value="">Select Dept</option>
+                  <select value={editSub.department} onChange={e => setEditSub({...editSub, department: e.target.value})} required disabled={departments.length === 0} className={inputClass}>
+                    <option value="">{departments.length === 0 ? "No departments available" : "Select Dept"}</option>
                     {departments.map(d => <option key={d.id} value={d.department_name}>{d.department_name}</option>)}
                   </select>
                 </div>
@@ -132,8 +132,8 @@ const AdminSubjects = () => {
                 <div><label className={labelClass}>Name</label><input type="text" value={newSub.subject_name} onChange={e => setNewSub({...newSub, subject_name: e.target.value})} required className={inputClass} /></div>
                 <div>
                   <label className={labelClass}>Department</label>
-                  <select value={newSub.department} onChange={e => setNewSub({...newSub, department: e.target.value})} required className={inputClass}>
-                    <option value="">Select Dept</option>
+                  <select value={newSub.department} onChange={e => setNewSub({...newSub, department: e.target.value})} required disabled={departments.length === 0} className={inputClass}>
+                    <option value="">{departments.length === 0 ? "No departments available" : "Select Dept"}</option>
                     {departments.map(d => <option key={d.id} value={d.department_name}>{d.department_name}</option>)}
                   </select>
                 </div>

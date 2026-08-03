@@ -8,51 +8,96 @@ const getAdminAnalytics = async (req, res) => {
     // In a real app, this would be complex SQL aggregations. 
     // Here we generate realistic dynamic data based on current DB state.
     
-    // 1. Attendance Trend
+    // 1. Attendance Trend (By Month)
+    const [attData] = await pool.execute(`
+      SELECT strftime('%m', attendance_date) as month, 
+             COUNT(*) as total, 
+             SUM(CASE WHEN attendance_status = 'Present' THEN 1 ELSE 0 END) as present 
+      FROM attendance 
+      GROUP BY month ORDER BY month LIMIT 6
+    `);
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const defaultMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
     const areaData = {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-      data: [78, 85, 82, 90, 88, 92]
+      labels: attData.length > 0 ? attData.map(r => monthNames[parseInt(r.month) - 1] || r.month) : defaultMonths,
+      data: attData.length > 0 ? attData.map(r => Math.round((r.present / r.total) * 100)) : [0, 0, 0, 0, 0, 0]
     };
 
-    // 2. Department-wise Performance
-    const [departments] = await pool.execute('SELECT department_name FROM departments LIMIT 5');
-    const deptLabels = departments.length > 0 ? departments.map(d => d.department_name) : ['CS', 'IT', 'ECE', 'Mech', 'Civil'];
-    
+    // 2. Department-wise Performance (CGPA approximation)
+    const [deptData] = await pool.execute(`
+      SELECT s.department, AVG(m.percentage / 10) as avg_cgpa 
+      FROM marks m JOIN students s ON m.student_id = s.id 
+      WHERE m.total_marks > 0 GROUP BY s.department
+    `);
+    const defaultDepts = ['CS', 'IT', 'ECE', 'Mech', 'Civil'];
     const barData = {
-      labels: deptLabels,
-      data: deptLabels.map(() => (Math.random() * (9 - 7) + 7).toFixed(1)) // Random CGPA between 7 and 9
+      labels: deptData.length > 0 ? deptData.map(r => r.department || 'Unknown') : defaultDepts,
+      data: deptData.length > 0 ? deptData.map(r => Number(r.avg_cgpa).toFixed(1)) : [0, 0, 0, 0, 0]
     };
 
     // 3. Doughnut (Pass vs Fail)
+    const [passData] = await pool.execute(`
+      SELECT COUNT(*) as total, 
+             SUM(CASE WHEN percentage >= 40 THEN 1 ELSE 0 END) as passed 
+      FROM marks WHERE total_marks > 0
+    `);
+    const totalMarks = passData[0]?.total || 0;
+    const passedMarks = passData[0]?.passed || 0;
+    const failedMarks = totalMarks - passedMarks;
+    
     const doughnutData = {
-      labels: ['Passed', 'Failed', 'Withheld'],
-      data: [85, 12, 3] // Realistic static ratio
+      labels: ['Passed', 'Failed'],
+      data: totalMarks > 0 ? [passedMarks, failedMarks] : [0, 100] // Shows 100% fail/placeholder if 0
     };
 
-    // 4. Radar (Skill Assessment)
+    // 4. Radar (Skill Assessment - mapped to average marks per subject)
+    const [subjMarks] = await pool.execute(`
+      SELECT su.subject_name, AVG(m.percentage) as avg_mark 
+      FROM marks m JOIN subjects su ON m.subject_id = su.id 
+      WHERE m.total_marks > 0 GROUP BY su.subject_name LIMIT 5
+    `);
+    const defaultSkills = ['Assignments', 'Mid-Terms', 'Finals', 'Practicals', 'Attendance'];
     const radarData = {
-      labels: ['Assignments', 'Mid-Terms', 'Finals', 'Practicals', 'Attendance'],
-      datasets: [
-        { label: deptLabels[0] || 'CS', data: [90, 85, 88, 92, 85] },
-        { label: deptLabels[1] || 'IT', data: [85, 82, 80, 88, 89] }
-      ]
+      labels: subjMarks.length > 0 ? subjMarks.map(r => r.subject_name) : defaultSkills,
+      datasets: [{ 
+        label: 'Average Score %', 
+        data: subjMarks.length > 0 ? subjMarks.map(r => Math.round(r.avg_mark)) : [0, 0, 0, 0, 0] 
+      }]
     };
 
     // 5. Polar Area (Subject Popularity)
-    const [subjects] = await pool.execute('SELECT subject_name FROM subjects LIMIT 5');
-    const subjLabels = subjects.length > 0 ? subjects.map(s => s.subject_name) : ['Data Structures', 'OS', 'Networks', 'AI', 'Web Dev'];
+    const [popData] = await pool.execute(`
+      SELECT su.subject_name, COUNT(st.id) as enrolled 
+      FROM subjects su LEFT JOIN students st ON st.subject_id = su.id 
+      GROUP BY su.id ORDER BY enrolled DESC LIMIT 5
+    `);
+    const defaultSubjs = ['Data Structures', 'OS', 'Networks', 'AI', 'Web Dev'];
     const polarData = {
-      labels: subjLabels,
-      data: subjLabels.map(() => Math.floor(Math.random() * 100) + 50)
+      labels: popData.filter(r => r.enrolled > 0).length > 0 ? popData.filter(r => r.enrolled > 0).map(r => r.subject_name) : defaultSubjs,
+      data: popData.filter(r => r.enrolled > 0).length > 0 ? popData.filter(r => r.enrolled > 0).map(r => r.enrolled) : [0, 0, 0, 0, 0]
     };
 
-    // 6. Line Chart (Marks Trend)
+    // 6. Line Chart (Marks Trend by Month)
+    const [trendData] = await pool.execute(`
+      SELECT strftime('%m', created_at) as month, AVG(percentage) as avg_mark 
+      FROM marks WHERE total_marks > 0 GROUP BY month ORDER BY month LIMIT 6
+    `);
+    const defaultExams = ['Test 1', 'Test 2', 'Mid-Term', 'Test 3', 'Final'];
     const lineData = {
-      labels: ['Test 1', 'Test 2', 'Mid-Term', 'Test 3', 'Final'],
-      data: [65, 68, 75, 72, 82]
+      labels: trendData.length > 0 ? trendData.map(r => monthNames[parseInt(r.month) - 1] || r.month) : defaultExams,
+      data: trendData.length > 0 ? trendData.map(r => Math.round(r.avg_mark)) : [0, 0, 0, 0, 0]
     };
 
-    res.json({ areaData, barData, doughnutData, radarData, polarData, lineData });
+    // Overview stats
+    const [counts] = await pool.execute('SELECT COUNT(*) as c FROM students WHERE status="Active"');
+    const overview = {
+      totalStudents: counts[0].c,
+      attendance: areaData.data.length > 0 ? areaData.data[areaData.data.length - 1] : 0,
+      cgpa: barData.data.length > 0 ? (barData.data.reduce((a, b) => a + parseFloat(b), 0) / barData.data.length).toFixed(2) : 0,
+      completion: 0
+    };
+
+    res.json({ overview, areaData, barData, doughnutData, radarData, polarData, lineData });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error fetching admin analytics' });
@@ -66,37 +111,71 @@ const getStudentAnalytics = async (req, res) => {
   try {
     const studentId = req.user.id;
     
+    const [students] = await pool.execute('SELECT id, department, semester FROM students WHERE user_id = ?', [studentId]);
+    if (students.length === 0) return res.status(404).json({ message: 'Student profile not found' });
+    const internalId = students[0].id;
+
+    // 1. Personal Attendance Trend (By Month)
+    const [attData] = await pool.execute(`
+      SELECT strftime('%m', attendance_date) as month, 
+             COUNT(*) as total, 
+             SUM(CASE WHEN attendance_status = 'Present' THEN 1 ELSE 0 END) as present 
+      FROM attendance WHERE student_id = ?
+      GROUP BY month ORDER BY month LIMIT 6
+    `, [internalId]);
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const defaultMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
     const areaData = {
-      labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
-      data: [100, 95, 88, 92, 100, 88]
+      labels: attData.length > 0 ? attData.map(r => monthNames[parseInt(r.month) - 1] || r.month) : defaultMonths,
+      data: attData.length > 0 ? attData.map(r => Math.round((r.present / r.total) * 100)) : [0, 0, 0, 0, 0, 0]
     };
 
-    const radarData = {
-      labels: ['Programming', 'Mathematics', 'Hardware', 'Soft Skills', 'Theory'],
-      mySkills: [95, 80, 75, 88, 90],
-      classAverage: [78, 82, 70, 75, 80]
-    };
+    // 2. Subject Marks vs Class Average
+    const [marksData] = await pool.execute(`
+      SELECT su.subject_name, m.percentage as my_mark, 
+             (SELECT AVG(percentage) FROM marks WHERE subject_id = su.id) as avg_mark
+      FROM marks m JOIN subjects su ON m.subject_id = su.id 
+      WHERE m.student_id = ? AND m.total_marks > 0
+    `, [internalId]);
 
-    // Fetch actual subjects for this student
-    const [students] = await pool.execute('SELECT department, semester FROM students WHERE user_id = ?', [studentId]);
-    let subjLabels = ['OS', 'DBMS', 'Networks', 'Web Dev'];
-    if (students.length > 0) {
-      const [subjects] = await pool.execute('SELECT subject_name FROM subjects WHERE department = ? AND semester = ? LIMIT 4', [students[0].department, students[0].semester]);
-      if (subjects.length > 0) subjLabels = subjects.map(s => s.subject_name);
-    }
-    
+    const defaultSubjs = ['OS', 'DBMS', 'Networks', 'Web Dev'];
     const barData = {
-      labels: subjLabels,
-      myMarks: subjLabels.map(() => Math.floor(Math.random() * 30) + 70),
-      classAverage: subjLabels.map(() => Math.floor(Math.random() * 30) + 60)
+      labels: marksData.length > 0 ? marksData.map(r => r.subject_name) : defaultSubjs,
+      myMarks: marksData.length > 0 ? marksData.map(r => Math.round(r.my_mark)) : [0, 0, 0, 0],
+      classAverage: marksData.length > 0 ? marksData.map(r => Math.round(r.avg_mark || 0)) : [0, 0, 0, 0]
     };
 
+    // 3. Radar (Skills) - Mirror marks vs class average
+    const radarData = {
+      labels: barData.labels,
+      mySkills: barData.myMarks,
+      classAverage: barData.classAverage
+    };
+
+    // 4. Doughnut (Assignment Completion)
+    // Since there is no assignment_submissions table, we can't track completion. 
+    // We will return an empty chart if no data, avoiding fake data.
     const doughnutData = {
       labels: ['Completed', 'Pending', 'Overdue'],
-      data: [12, 3, 0]
+      data: [0, 0, 0]
     };
 
-    res.json({ areaData, radarData, barData, doughnutData });
+    // Overview stats
+    const [attTotal] = await pool.execute("SELECT COUNT(*) as t, SUM(CASE WHEN attendance_status='Present' THEN 1 ELSE 0 END) as p FROM attendance WHERE student_id = ?", [internalId]);
+    const overallAtt = attTotal[0].t > 0 ? Math.round((attTotal[0].p / attTotal[0].t) * 100) : 0;
+    
+    const [markTotal] = await pool.execute("SELECT AVG(percentage / 10) as cgpa FROM marks WHERE student_id = ? AND total_marks > 0", [internalId]);
+    const cgpa = markTotal[0].cgpa ? Number(markTotal[0].cgpa).toFixed(2) : 0;
+    
+    const [bestSubj] = await pool.execute("SELECT su.subject_name, m.percentage as p FROM marks m JOIN subjects su ON m.subject_id=su.id WHERE m.student_id = ? AND m.total_marks > 0 ORDER BY p DESC LIMIT 1", [internalId]);
+    
+    const overview = {
+      cgpa: cgpa,
+      bestSubject: bestSubj.length > 0 ? `${bestSubj[0].subject_name} (${Math.round(bestSubj[0].p)}%)` : 'None',
+      attendance: overallAtt
+    };
+
+    res.json({ overview, areaData, radarData, barData, doughnutData });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error fetching student analytics' });

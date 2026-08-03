@@ -20,13 +20,36 @@ const StudentProfile = () => {
     rollNumber: '',
     address: '',
     subject_name: '',
-    profile_image: ''
+    profile_image: '',
+    cgpa: '-',
+    grade: '-',
+    attendance: '-',
+    classRank: '-'
   });
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { data } = await axios.get('/api/profile', { withCredentials: true });
+        const [profileRes, analyticsRes] = await Promise.all([
+          axios.get('/api/profile', { withCredentials: true }),
+          axios.get('/api/analytics/student', { withCredentials: true }).catch(() => ({ data: null }))
+        ]);
+        
+        const data = profileRes.data;
+        const analytics = analyticsRes.data?.overview || { cgpa: 0, attendance: 0 };
+        
+        const cgpaVal = parseFloat(analytics.cgpa) || 0;
+        let grade = '-';
+        if (cgpaVal > 0) {
+           if (cgpaVal >= 9) grade = 'A+';
+           else if (cgpaVal >= 8) grade = 'A';
+           else if (cgpaVal >= 7) grade = 'B+';
+           else if (cgpaVal >= 6) grade = 'B';
+           else if (cgpaVal >= 5) grade = 'C';
+           else if (cgpaVal >= 4) grade = 'D';
+           else grade = 'F';
+        }
+
         setProfileData({
           name: data.full_name || user?.name || 'Student Name',
           email: data.email || user?.username || 'student@edutrack.com',
@@ -36,7 +59,11 @@ const StudentProfile = () => {
           rollNumber: data.roll_number || '',
           address: data.address || '',
           subject_name: data.subject_name || 'Not Assigned',
-          profile_image: data.profile_image || ''
+          profile_image: data.profile_image || '',
+          cgpa: cgpaVal > 0 ? cgpaVal.toFixed(2) : '-',
+          grade: grade,
+          attendance: analytics.attendance > 0 ? `${analytics.attendance}%` : '-',
+          classRank: '-'
         });
       } catch (error) {
         console.error("Failed to fetch profile", error);
@@ -101,23 +128,23 @@ const StudentProfile = () => {
             </button>
           </div>
           <div className="px-8 pb-8">
-            <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between -mt-16 sm:-mt-20 mb-6 relative z-10">
-              <div className="flex flex-col sm:flex-row items-center sm:items-end space-y-4 sm:space-y-0 sm:space-x-6">
-                <div className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 bg-white dark:bg-gray-700 shadow-xl flex items-center justify-center relative overflow-hidden group">
+            <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between mb-6 relative z-10">
+              <div className="flex flex-col sm:flex-row items-center sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <div className="-mt-16 sm:-mt-20 w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 bg-white dark:bg-gray-700 shadow-xl flex items-center justify-center relative overflow-hidden group">
                   {profileData.profile_image ? (
                     <img src={`${profileData.profile_image}`} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-4xl text-gray-400">{profileData.name.charAt(0)}</span>
+                    <span className="text-4xl text-gray-400 font-bold">{profileData.name ? profileData.name.charAt(0).toUpperCase() : 'S'}</span>
                   )}
                   <div className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer transition" onClick={() => fileInputRef.current?.click()}>
                     <FiCamera className="text-white" size={24} />
                   </div>
                   <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
                 </div>
-                <div className="text-center sm:text-left pb-2">
+                <div className="text-center sm:text-left mt-2 sm:mt-0">
                   <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{profileData.name}</h1>
                   <p className="text-gray-500 dark:text-gray-400 font-medium flex items-center justify-center sm:justify-start mt-1">
-                    <FiBook className="mr-2 text-blue-500" /> {profileData.department} • {profileData.subject_name}
+                    <FiBook className="mr-2 text-blue-500" /> {profileData.department} {profileData.subject_name ? `• ${profileData.subject_name}` : ''}
                   </p>
                 </div>
               </div>
@@ -134,22 +161,22 @@ const StudentProfile = () => {
               <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-600 text-center">
                 <FiBarChart2 className="mx-auto text-blue-500 mb-2" size={24} />
                 <p className="text-sm text-gray-500 dark:text-gray-400">CGPA</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">8.75</p>
+                <p className="text-xl font-bold text-gray-900 dark:text-white">{profileData.cgpa}</p>
               </div>
               <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-600 text-center">
                 <FiAward className="mx-auto text-purple-500 mb-2" size={24} />
                 <p className="text-sm text-gray-500 dark:text-gray-400">Overall Grade</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">A</p>
+                <p className="text-xl font-bold text-gray-900 dark:text-white">{profileData.grade}</p>
               </div>
               <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-600 text-center">
                 <FiBook className="mx-auto text-green-500 mb-2" size={24} />
                 <p className="text-sm text-gray-500 dark:text-gray-400">Attendance</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">88%</p>
+                <p className="text-xl font-bold text-gray-900 dark:text-white">{profileData.attendance}</p>
               </div>
               <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-600 text-center">
                 <FiAward className="mx-auto text-yellow-500 mb-2" size={24} />
                 <p className="text-sm text-gray-500 dark:text-gray-400">Class Rank</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white">12th</p>
+                <p className="text-xl font-bold text-gray-900 dark:text-white">{profileData.classRank}</p>
               </div>
             </div>
 

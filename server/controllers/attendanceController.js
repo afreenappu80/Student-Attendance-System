@@ -9,7 +9,7 @@ const markAttendance = async (req, res) => {
     const [result] = await pool.execute(
       `INSERT INTO attendance (student_id, subject_id, attendance_date, attendance_status, remarks) 
        VALUES (?, ?, ?, ?, ?) 
-       ON DUPLICATE KEY UPDATE attendance_status = ?, remarks = ?, updated_at = CURRENT_TIMESTAMP`,
+       ON CONFLICT(student_id, subject_id, attendance_date) DO UPDATE SET attendance_status = ?, remarks = ?, updated_at = CURRENT_TIMESTAMP`,
       [student_id, subject_id, attendance_date, attendance_status, remarks, attendance_status, remarks]
     );
 

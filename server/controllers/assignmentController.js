@@ -25,13 +25,33 @@ const upload = multer({ storage });
 // @access  Private
 const getAssignments = async (req, res) => {
   try {
-    const query = `
-      SELECT a.*, s.subject_name, s.subject_code, s.semester 
-      FROM assignments a
-      JOIN subjects s ON a.subject_id = s.id
-      ORDER BY a.due_date ASC
-    `;
-    const [assignments] = await pool.execute(query);
+    let query;
+    let params = [];
+
+    if (req.user.role === 'student') {
+      const [studentRec] = await pool.execute('SELECT department, semester FROM students WHERE user_id = ?', [req.user.id]);
+      if (studentRec.length > 0) {
+        query = `
+          SELECT a.*, s.subject_name, s.subject_code, s.semester 
+          FROM assignments a
+          JOIN subjects s ON a.subject_id = s.id
+          WHERE s.department LIKE '%' || ? || '%' AND s.semester = ?
+          ORDER BY a.due_date ASC
+        `;
+        params = [studentRec[0].department, studentRec[0].semester];
+      } else {
+        return res.status(404).json({ message: 'Student profile not found' });
+      }
+    } else {
+      query = `
+        SELECT a.*, s.subject_name, s.subject_code, s.semester 
+        FROM assignments a
+        JOIN subjects s ON a.subject_id = s.id
+        ORDER BY a.due_date ASC
+      `;
+    }
+    
+    const [assignments] = await pool.execute(query, params);
     res.json(assignments);
   } catch (error) {
     console.error(error);

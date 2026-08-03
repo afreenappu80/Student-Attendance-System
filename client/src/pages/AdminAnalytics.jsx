@@ -185,38 +185,38 @@ const AdminAnalytics = () => {
       {/* Progress Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Enrollment Growth</p>
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Enrollment</p>
           <div className="flex items-end mt-2">
-            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">1,245</h3>
+            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{chartData.overview?.totalStudents || 0}</h3>
             <span className="ml-2 flex items-center text-sm font-bold text-green-500 bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-md mb-1">
-              <FiTrendingUp className="mr-1" /> +12%
+              <FiTrendingUp className="mr-1" /> Active
             </span>
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Overall Attendance</p>
           <div className="flex items-end mt-2">
-            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">85.4%</h3>
+            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{chartData.overview?.attendance || 0}%</h3>
             <span className="ml-2 flex items-center text-sm font-bold text-green-500 bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-md mb-1">
-              <FiTrendingUp className="mr-1" /> +2.1%
+              Live
             </span>
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Average CGPA</p>
           <div className="flex items-end mt-2">
-            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">7.82</h3>
-            <span className="ml-2 flex items-center text-sm font-bold text-red-500 bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-md mb-1">
-              <FiTrendingDown className="mr-1" /> -0.1%
+            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{chartData.overview?.cgpa || 0}</h3>
+            <span className="ml-2 flex items-center text-sm font-bold text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded-md mb-1">
+              <FiTrendingUp className="mr-1" /> Avg
             </span>
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Assignment Completion</p>
           <div className="flex items-end mt-2">
-            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">92%</h3>
-            <span className="ml-2 flex items-center text-sm font-bold text-green-500 bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-md mb-1">
-              <FiTrendingUp className="mr-1" /> +5%
+            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{chartData.overview?.completion || 0}%</h3>
+            <span className="ml-2 flex items-center text-sm font-bold text-gray-500 bg-gray-50 dark:bg-gray-900/20 px-2 py-0.5 rounded-md mb-1">
+              Data
             </span>
           </div>
         </div>

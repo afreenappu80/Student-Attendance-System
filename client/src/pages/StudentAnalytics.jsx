@@ -132,20 +132,20 @@ const StudentAnalytics = () => {
         <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
           <FiTarget className="absolute -right-4 -bottom-4 w-32 h-32 text-white opacity-10" />
           <h3 className="text-blue-100 font-medium">CGPA Progress</h3>
-          <p className="text-4xl font-bold mt-2">8.75</p>
-          <p className="text-sm text-blue-200 mt-2 flex items-center"><FiTrendingUp className="mr-1"/> Top 10% of class</p>
+          <p className="text-4xl font-bold mt-2">{chartData.overview?.cgpa || 0}</p>
+          <p className="text-sm text-blue-200 mt-2 flex items-center">Overall CGPA</p>
         </div>
         <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
           <FiAward className="absolute -right-4 -bottom-4 w-32 h-32 text-white opacity-10" />
           <h3 className="text-emerald-100 font-medium">Best Subject</h3>
-          <p className="text-3xl font-bold mt-2">Web Dev (95%)</p>
-          <p className="text-sm text-emerald-200 mt-2">Consistent A+ grade</p>
+          <p className="text-3xl font-bold mt-2">{chartData.overview?.bestSubject || 'None'}</p>
+          <p className="text-sm text-emerald-200 mt-2">Highest scored subject</p>
         </div>
         <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
           <FiTrendingUp className="absolute -right-4 -bottom-4 w-32 h-32 text-white opacity-10" />
-          <h3 className="text-purple-100 font-medium">Total Credits</h3>
-          <p className="text-4xl font-bold mt-2">120/160</p>
-          <p className="text-sm text-purple-200 mt-2">On track for graduation</p>
+          <h3 className="text-purple-100 font-medium">Total Attendance</h3>
+          <p className="text-4xl font-bold mt-2">{chartData.overview?.attendance || 0}%</p>
+          <p className="text-sm text-purple-200 mt-2">Overall classes attended</p>
         </div>
       </div>
 

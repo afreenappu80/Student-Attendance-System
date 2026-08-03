@@ -105,8 +105,8 @@ const AdminMarks = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subject</label>
-            <select value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Select Subject...</option>
+            <select value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} disabled={subjects.length === 0} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">{subjects.length === 0 ? "No subjects found. Add one first." : "Select Subject..."}</option>
               {subjects.map(s => <option key={s.id} value={s.id}>{s.subject_name}</option>)}
             </select>
           </div>

@@ -10,6 +10,7 @@ const AddStudentModal = ({ isOpen, onClose, onSuccess }) => {
     semester: '', full_name: '', email: '', phone: '', gender: '', password: '', subject_id: '', profile_image: null
   });
   const [subjects, setSubjects] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchingSubjects, setFetchingSubjects] = useState(false);
 
@@ -26,10 +27,14 @@ const AddStudentModal = ({ isOpen, onClose, onSuccess }) => {
   const fetchActiveSubjects = async () => {
     setFetchingSubjects(true);
     try {
-      const { data } = await axios.get('/api/subjects?status=Active', { withCredentials: true });
-      setSubjects(data);
+      const [subRes, deptRes] = await Promise.all([
+        axios.get('/api/subjects?status=Active', { withCredentials: true }),
+        axios.get('/api/departments', { withCredentials: true })
+      ]);
+      setSubjects(subRes.data);
+      setDepartments(deptRes.data);
     } catch (error) {
-      toast.error('Failed to fetch active subjects');
+      toast.error('Failed to fetch required data');
     } finally {
       setFetchingSubjects(false);
     }
@@ -110,12 +115,9 @@ const AddStudentModal = ({ isOpen, onClose, onSuccess }) => {
               </div>
               <div>
                 <label className={labelClass}>Department *</label>
-                <select name="department" required value={formData.department} onChange={handleChange} className={inputClass}>
+                <select name="department" required value={formData.department} onChange={handleChange} className={inputClass} disabled={fetchingSubjects}>
                   <option value="">Select Department</option>
-                  <option value="Computer Science">Computer Science</option>
-                  <option value="Information Technology">Information Technology</option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Mechanical">Mechanical</option>
+                  {departments.map(d => <option key={d.id} value={d.department_name}>{d.department_name}</option>)}
                 </select>
               </div>
               <div><label className={labelClass}>Branch</label><input type="text" name="branch" value={formData.branch} onChange={handleChange} className={inputClass} /></div>

@@ -106,6 +106,7 @@ function App() {
             {/* Admin Routes */}
             <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
             <Route path="/admin/students" element={<ProtectedAdminRoute><AdminStudentManagement /></ProtectedAdminRoute>} />
+            <Route path="/admin/departments" element={<ProtectedAdminRoute><AdminDepartments /></ProtectedAdminRoute>} />
             <Route path="/admin/subjects" element={<ProtectedAdminRoute><AdminSubjects /></ProtectedAdminRoute>} />
             <Route path="/admin/attendance" element={<ProtectedAdminRoute><AdminAttendance /></ProtectedAdminRoute>} />
             <Route path="/admin/assignments" element={<ProtectedAdminRoute><AdminAssignments /></ProtectedAdminRoute>} />

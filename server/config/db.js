@@ -59,9 +59,11 @@ async function initializeSchema(db) {
         parent_name TEXT,
         parent_phone TEXT,
         profile_image TEXT,
+        subject_id INTEGER,
         status TEXT DEFAULT 'Active' CHECK(status IN ('Active', 'Inactive')),
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE SET NULL
     );
 
     CREATE TABLE IF NOT EXISTS departments (
@@ -80,6 +82,7 @@ async function initializeSchema(db) {
         semester INTEGER,
         credits INTEGER,
         faculty_name TEXT,
+        status TEXT DEFAULT 'Active' CHECK(status IN ('Active', 'Inactive')),
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -144,6 +147,8 @@ async function initializeSchema(db) {
         title TEXT NOT NULL,
         description TEXT,
         due_date DATE NOT NULL,
+        department TEXT,
+        semester INTEGER,
         priority TEXT DEFAULT 'Medium',
         subject_id INTEGER NOT NULL,
         created_by INTEGER NOT NULL, 
